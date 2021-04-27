@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #A3CDFF;
+    min-height: 100%;
+    overflow-x: hidden;
+    font-family: 'Yandex Sans Text', Tahoma, Geneva, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+    font-family: 'Yandex Sans Text', Tahoma, Geneva, sans-serif;
+}
+
+img{
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#root {
+    display: flex;
+    flex-grow: 1;
+}
