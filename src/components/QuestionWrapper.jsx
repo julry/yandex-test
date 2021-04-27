@@ -6,7 +6,7 @@ import {questions} from "../questions.config";
 import {Button} from "../shared/Button";
 
 const Wrapper  = styled.div`
-    padding: 2.5862vh 5.0666vw 0;
+    padding: 2.5862vh 5.0666vw 5px;
     position: relative;
     width: 100vw;
 `
