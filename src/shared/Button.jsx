@@ -8,5 +8,12 @@ export const Button = styled.button`
     border: none;
     font-size: 18px;
     border-radius: 5px;
-    
+    @media all and (max-width: 325px){
+        padding: 18px 35px;
+        font-size: 16px;
+    } 
+    @media all and (max-width: 300px){
+        padding: 20px 20px;
+        font-size: 14px;
+    }
 `
