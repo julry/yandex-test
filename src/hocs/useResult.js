@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import {useContext, useState} from 'react';
 import { ProgressContext } from '../contexts/ProgressContext';
 import { getAnswerById } from '../utils/getAnswerById';
 import { AnswerType, answerTypes } from '../answerTypes.config';
 
-const DEFAULT_RESULT = AnswerType.Intellectual;
+const DEFAULT_RESULT = AnswerType.Analytics;
 
 export const useResult = () => {
     const { answers } = useContext(ProgressContext);
@@ -11,7 +11,6 @@ export const useResult = () => {
     const resultPoints = Object.keys(answers).reduce((res, questionId) => {
         const answerId = answers[questionId];
         if (!answerId) return res;
-
         const answer = getAnswerById(questionId, answerId);
         const { type } = answer;
         return { ...res, [type]: (res[type] || 0) + 1 };

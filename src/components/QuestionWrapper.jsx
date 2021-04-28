@@ -1,12 +1,13 @@
-import React, {useCallback, useContext, useRef, useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 import styled from 'styled-components';
 import { ProgressContext } from '../contexts/ProgressContext';
 import {BoldMainText, MainText, Text} from "../shared/Text";
 import {questions} from "../questions.config";
 import {Button} from "../shared/Button";
+import {reachMetrikaGoal} from "../utils/reachMetrikaGoal";
 
 const Wrapper  = styled.div`
-    padding: 2.5862vh 5.0666vw 5px;
+    padding: 2.5862vh 5.0666vw 0;
     position: relative;
     width: 100vw;
 `
@@ -78,7 +79,7 @@ const Modal = styled.div`
   padding: 22px 25px;
   width: 300px;
   margin-bottom: 3.463054vh;
-  @media all and (min-width: 1100px){
+  @media all and (min-width: 640px){
           width: 450px;
   }
 `
@@ -93,6 +94,11 @@ const QuestionWrapper = (props) => {
     const handleAnswerChange = useCallback((answerId) => {
         setAnswer(question.id, answerId);
     }, [question, setAnswer]);
+
+    const onSetNextQuestion = () => {
+        if (questionNumber === questions.length) reachMetrikaGoal('finish');
+        setNext();
+    }
 
     return <Wrapper style={isDescriptionModal? {overflow: 'hidden', height: window.innerHeight} : {}}>
             <NumberWrapper> {questionNumber}</NumberWrapper>
@@ -110,7 +116,11 @@ const QuestionWrapper = (props) => {
                 )}
             </AnswersWrapper>
 
-        {answers[question.id] ? <Button onClick={() => setIsDescriptionModal(true)}>Далее</Button>
+        {answers[question.id] ? <Button style={question.id==='5'?{marginBottom: '5px'}: {}}
+                                        onClick={() => setIsDescriptionModal(true)}
+            >
+                Далее
+        </Button>
          : <div style={{height: "55px"}} />
         }
 
@@ -122,7 +132,7 @@ const QuestionWrapper = (props) => {
                         <BoldMainText>{question.afterTitle}</BoldMainText>
                         <MainText>{question.afterText}</MainText>
                     </Modal>
-                    <Button onClick={setNext}>Далее</Button>
+                    <Button onClick={onSetNextQuestion}>Далее</Button>
                 </ModalContent>
             </ModalWrapper>}
         </Wrapper>

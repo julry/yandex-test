@@ -5,11 +5,11 @@ import {IntellectualResult} from "./shared/svg/Results/IntellectualResult";
 import {EntrepreneurResult} from "./shared/svg/Results/EntrepreneurResult";
 
 export const AnswerType = {
-    Analytics: 'analytics',
+    Analytics: 'analytic',
     Negotiator: 'negotiator',
     Presenter: 'presenter',
     Intellectual: 'intellectual',
-    Entrepreneur: 'entrepreneur',
+    Entrepreneur: 'businessman',
 };
 
 export const answerTypes = {
