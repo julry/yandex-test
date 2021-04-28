@@ -6,6 +6,7 @@ import {MainText} from "../shared/Text";
 import {ProgressContext} from "../contexts/ProgressContext";
 import {IntroImg} from "../shared/svg/IntroImg";
 import {IntroImgDesktop} from "../shared/svg/IntoImgDesktop";
+import {reachMetrikaGoal} from "../utils/reachMetrikaGoal";
 
 const Wrapper = styled.div`
       padding: 4.55665vh 9.86666vw 0;
@@ -26,10 +27,8 @@ const Title = styled.h1`
     font-size: 21px;
     line-height: 27px;
     margin: 3.9408vh 0 2.093596vh;
-    max-width: 180px;
     
     @media all and (min-width: 1100px){ 
-        max-width: 100vw;
         margin: 4vh 0 5.665vh;
         font-size: 30px;
     }
@@ -70,9 +69,9 @@ const StartBtn = styled(Button)`
 const ImgWrapperMobile = styled.div`
     margin-left: -37px;
     overflow: hidden;
-    padding-top: 8vw;
+    padding-top: 12.73vw;
     width: 100vw;
-    max-height: 88.95vw;
+    height: 95vw;
     @media all and (min-width: 640px){ 
       display: none;
     }
@@ -95,15 +94,23 @@ const ImgWrapperDesktop = styled.div`
         height: 50.20833vw;
     }
 `
+
+
 const Intro = () => {
     const { setNext } = useContext(ProgressContext);
+
+    const  onStart = () => {
+        reachMetrikaGoal('start');
+        setNext();
+    }
+
     return <Wrapper>
         <LogoStyled />
         <Title>{"Карьерный тест от Яндекса"}</Title>
         <TextWrapper>
             <TextMobile>
                 <MainText>
-                    {"Все еще «ищешь себя»? Ответь на 8 вопросов о своих мечтах, целях и амбициях и узнай, насколько круто ты впишешься в роль передового бойца Яндекса. Нет, речь не про IT-шников, ведь самое главное для Яндекса – довольные клиенты!\n" +
+                    {"Все еще «ищешь себя»? Ответь на 8 вопросов о своих мечтах, целях и амбициях и узнай, насколько круто ты впишешься в роль передового бойца Яндекса.\nНет, речь не про IT-шников, ведь самое главное для Яндекса – довольные клиенты!\n" +
                     "Поехали!"}
                 </MainText>
             </TextMobile>
@@ -114,7 +121,7 @@ const Intro = () => {
                 </MainText>
             </TextDesktop>
         </TextWrapper>
-        <StartBtn onClick={setNext}>Пройти тест</StartBtn>
+        <StartBtn onClick={onStart}>Пройти тест</StartBtn>
         <ImgWrapperMobile>
             <IntroImg />
         </ImgWrapperMobile>

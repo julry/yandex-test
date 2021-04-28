@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import styled from 'styled-components';
 import {useResult} from "../hocs/useResult";
 import {Text} from "../shared/Text";
-import {preloadImage} from "../utils/preloadImage";
 import {getFeedback} from "../utils/getFeedback";
 import {DownChevron} from "../shared/svg/DownChevron";
 import {UpChevron} from "../shared/svg/UpChevron";
@@ -11,6 +10,9 @@ import {DoubleForward} from "../shared/svg/DoubleForward";
 import {feedbacks} from "../feedbacks.config";
 import {DoubleBack} from "../shared/svg/DoubleBack";
 import {ImageWrapper} from "./ResultPicture";
+import {ProgressContext} from "../contexts/ProgressContext";
+import {getAnswerById} from "../utils/getAnswerById";
+import {reachMetrikaGoal} from "../utils/reachMetrikaGoal";
 
 const Wrapper = styled.div`
     padding: 0 18px 3.694581vh;
@@ -56,7 +58,7 @@ const DescriptionWrapper = styled(RoundBorderDiv)`
 `
 
 const TextWrapper = styled(RoundBorderDiv)`
-    padding: 13px 15px;
+    padding: 21px 15px 13px;
     margin: 14px 0;
 `
 
@@ -70,8 +72,19 @@ const Feedback = styled.div`
       grid-row: 2/3;
     }
 `
+const FeedbacksTitle = styled(Text)`
+    border: 1px solid white;
+    padding: 11px 20px 28px;
+    border-radius: 10px;
+    font-weight: 500;
+    @media screen and (min-width: 640px){
+        white-space: pre-wrap;
+    }
+`
+
 const FeedbackWrapper = styled(RoundBorderDiv)`
     padding: 15px 19px 23px;
+    margin-top: -17px;
     position: relative;
     z-index: 2;
 `
@@ -139,17 +152,86 @@ const ButtonWrapperDesktop = styled.a`
     }
 `
 
+const InviteTitle = styled.p`
+    padding-bottom: 17px;
+    font-size: 14px;
+    font-weight: 500;
+    @media screen and (min-width: 640px) {
+        font-size: 18px;
+    }
+`
+
+const GOOGLE_FORM_QUESTION1_ID = 'entry.2009762436'
+const GOOGLE_FORM_QUESTION2_ID = 'entry.1882342065'
+const GOOGLE_FORM_QUESTION3_ID = 'entry.1766663954'
+const GOOGLE_FORM_QUESTION4_ID = 'entry.533798565'
+const GOOGLE_FORM_QUESTION5_ID = 'entry.1109563477';
+const GOOGLE_FORM_QUESTION6_ID = 'entry.359559111';
+const GOOGLE_FORM_QUESTION7_ID = 'entry.577532521';
+const GOOGLE_FORM_QUESTION8_ID = 'entry.907603219';
+
+
+const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfV989JLJe-j6YMKfti6pI_snO1kJfTmE9laYXHAwxXJEGUiQ/formResponse"
+
+
 const Final = () => {
     const result = useResult();
     const [feedbackID, setFeedbackID] = useState(1);
     const [feedback, setFeedback] = useState(getFeedback(result.type, '1'));
     const [isFeedbackFull, setIsFeedbackFull] = useState(false);
+    const { answers } = useContext(ProgressContext);
+
+
+
+    useEffect(()=>{
+        reachMetrikaGoal(result.type);
+        const formAnswers = [];
+        const findFormAnswer = (id) => {
+            return formAnswers.find(answer => answer.id===id)?.answer || '';
+        }
+        Object.keys(answers).map((questionId) => {
+            const answer = getAnswerById(questionId, answers[questionId])?.text || '';
+            formAnswers.push({id: questionId, answer: answer });
+        });
+
+        const formData = new FormData();
+
+        formData.append(GOOGLE_FORM_QUESTION1_ID, findFormAnswer("1"));
+        formData.append(GOOGLE_FORM_QUESTION2_ID, findFormAnswer("2"));
+        formData.append(GOOGLE_FORM_QUESTION3_ID, findFormAnswer("3"));
+        formData.append(GOOGLE_FORM_QUESTION4_ID, findFormAnswer("4"));
+        formData.append(GOOGLE_FORM_QUESTION5_ID, findFormAnswer("5"));
+        formData.append(GOOGLE_FORM_QUESTION6_ID, findFormAnswer("6"));
+        formData.append(GOOGLE_FORM_QUESTION7_ID, findFormAnswer("7"));
+        formData.append(GOOGLE_FORM_QUESTION8_ID, findFormAnswer("8"));
+
+
+        const myInit = {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        };
+
+        const myRequest = new Request(GOOGLE_FORM_ACTION_URL, myInit);
+
+        fetch(myRequest).then(function(response) {
+            return response;
+        }).then(function(response) {
+        }).catch(function(e){
+            console.log(e);
+        });
+
+    }, []);
 
     useEffect(() => {
         setFeedback(getFeedback(result.type, feedbackID.toString()))
-    }, [feedbackID]);
+    }, [feedbackID, result.type]);
 
     const isLastFeedback = +feedbackID === feedbacks[result.type].length;
+
+    const onInviteBtnClick = () => {
+        reachMetrikaGoal('apply');
+    }
 
     return <Wrapper>
         <ImageWrapper result={result} />
@@ -165,19 +247,20 @@ const Final = () => {
                 </DescriptionWrapper>
             </ResultWrapper>
             <TextWrapper>
+                <InviteTitle>
+                    Приглашаем тебя в нашу команду
+                </InviteTitle>
                 <Text>
                     {result.description}
-                    <br />
-                    <br />
-                    У нас в компании уже есть ребята, похожие на тебя. Лови их истории успеха! Интересно?
                 </Text>
             </TextWrapper>
-            <ButtonWrapperDesktop href={'https://yandex.fut.ru/?utm_source=fut&utm_medium=special&utm_campaign=test&utm_content=after'}>
+            <ButtonWrapperDesktop onClick={onInviteBtnClick} href={'https://yandex.fut.ru/?utm_source=fut&utm_medium=special&utm_campaign=test&utm_content=after'}>
                 <Button>  Хочу в Яндекс! </Button>
             </ButtonWrapperDesktop>
         </MainInfo>
 
         <Feedback>
+            <FeedbacksTitle>{"У нас в компании уже есть ребята, похожие на тебя.\nЛови их истории успеха!"}</FeedbacksTitle>
             <FeedbackWrapper>
                 <UserInfo>
                     <FeedbackImg>
@@ -197,7 +280,7 @@ const Final = () => {
                 </NextFeedbackBtn>
             }
         </Feedback>
-        <ButtonWrapperMobile href={'https://yandex.fut.ru/?utm_source=fut&utm_medium=special&utm_campaign=test&utm_content=after'}>
+        <ButtonWrapperMobile onClick={onInviteBtnClick} href={`https://yandex.fut.ru/?utm_source=fut&utm_medium=special&utm_campaign=test&utm_content=${result.type}`}>
             <Button>  Хочу в Яндекс! </Button>
         </ButtonWrapperMobile>
     </Wrapper>
