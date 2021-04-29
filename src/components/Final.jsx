@@ -254,7 +254,7 @@ const Final = () => {
                     {result.description}
                 </Text>
             </TextWrapper>
-            <ButtonWrapperDesktop onClick={onInviteBtnClick} href={'https://yandex.fut.ru/?utm_source=fut&utm_medium=special&utm_campaign=test&utm_content=after'}>
+            <ButtonWrapperDesktop onClick={onInviteBtnClick} href={`https://yandex.fut.ru/?utm_source=fut&utm_medium=special&utm_campaign=test&utm_content=${result.type}`}>
                 <Button>  Хочу в Яндекс! </Button>
             </ButtonWrapperDesktop>
         </MainInfo>
